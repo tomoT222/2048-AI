@@ -202,6 +202,8 @@ struct Agent
     {
         grid = _grid;
         seed = 13339144;
+        grid[1][3] = 1;
+        grid[3][1] = 2;
     }
 
     ////////////////////////////////////////
@@ -542,7 +544,7 @@ int main()
     double ALPHA = 0.1;
     double GAMMA = 0.9;
     int num_iteration = 1000000; // Number of iterations until end of episode.
-    int num_episode = 5000000;   // Number of samplings.
+    int num_episode = 500;   // Number of samplings.
     double ave_score = 0;
 
     // state value function
@@ -575,8 +577,6 @@ int main()
         //     }
         //     agent.grid[i][j] = x;
         // }
-        agent.grid[1][3] = 1;
-        agent.grid[3][1] = 2;
 
         // iteration
         rep(k, num_iteration)
@@ -721,11 +721,11 @@ int main()
     ofstream ofs("2048.txt");
 
     Agent agent;
-    rep(z, 2)
-    {
-        int i = xorshift64() % 4, j = xorshift64() % 4, x = xorshift64() % 2 + 1;
-        agent.grid[i][j] = x;
-    }
+    // rep(z, 2)
+    // {
+    //     int i = xorshift64() % 4, j = xorshift64() % 4, x = xorshift64() % 2 + 1;
+    //     agent.grid[i][j] = x;
+    // }
     rep(z, num_iteration)
     {
         if (!agent.can_move_all())
