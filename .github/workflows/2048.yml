@@ -1,0 +1,17 @@
+name: run-code
+on: [push]
+jobs:
+  compile-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+        - name: Set up GCC
+          uses: egor-tensin/setup-gcc@v1
+          with:
+            version: latest
+            platform: x64
+      - name: compile
+        run: g++ -O3 hoge.cpp
+      - name: run
+        run: ./a.out
