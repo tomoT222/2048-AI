@@ -6,11 +6,11 @@ jobs:
     steps:
       - name: Setup | Checkout
         uses: actions/checkout@v3
-        - name: Set up GCC
-          uses: egor-tensin/setup-gcc@v1
-          with:
-            version: latest
-            platform: x64
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: latest
+          platform: x64
       - name: compile
         run: g++ -O3 2048.cpp
       - name: run
