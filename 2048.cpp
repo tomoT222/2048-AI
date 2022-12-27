@@ -69,7 +69,7 @@ void make_hexadecimal()
     }
 }
 
-constexpr int MAX2 = 14;
+constexpr int MAX2 = 16;
 // BaseTwelve[a][b][c][d][e][f] = base twelve number of a,b,c,d,e,f.
 int BaseTwelve[MAX2][MAX2][MAX2][MAX2][MAX2][MAX2];
 void make_BaseTwelve()
@@ -532,6 +532,8 @@ int main()
 
     double T = clock();
 
+    // ofstream mid_results("midresults.txt");
+
     make_hexadecimal();
     make_BaseTwelve();
     make_Power16();
@@ -541,10 +543,11 @@ int main()
 
     double ALPHA = 0.1;
     double GAMMA = 0.9;
-    int deduct_score = 1000;
+    int deduct_score = 100;
     int num_iteration = 1000000; // Number of iterations until end of episode.
     int num_episode = 500000;    // Number of samplings.
     double ave_score = 0;
+    double before_ave = 0;
     int max_score = 0;
     string max_episode;
 
@@ -552,6 +555,7 @@ int main()
     V.resize(n_tuple_cnt, vector<double>(pow(MAX2, 6)));
 
     cout << "start episode" << endl;
+    cout << "deduct_score = " << deduct_score << endl;
     cout << "num_episode = " << num_episode << endl;
 
     rep2(z, num_episode)
@@ -640,7 +644,14 @@ int main()
             double d = reward + after_W - before_W;
             if (!agent.can_move_all())
             {
-                d -= deduct_score;
+                if (real_score > max_score)
+                {
+                    d += deduct_score;
+                }
+                else
+                {
+                    d -= deduct_score;
+                }
             }
             rep2(times, 8)
             {
@@ -712,6 +723,7 @@ int main()
             ave_score /= (num_episode / 50);
             cout << "  " << real_score << "  ";
             cout << fixed << setprecision(3) << ave_score << "  " << max_score << endl;
+            before_ave = ave_score;
             ave_score = 0;
         }
     }
