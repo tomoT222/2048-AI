@@ -543,7 +543,7 @@ int main()
 
     double ALPHA = 0.1;
     double GAMMA = 0.9;
-    int deduct_score = 100;
+    int ADD_score = 100;
     int num_iteration = 1000000; // Number of iterations until end of episode.
     int num_episode = 500000;    // Number of samplings.
     double ave_score = 0;
@@ -555,7 +555,7 @@ int main()
     V.resize(n_tuple_cnt, vector<double>(pow(MAX2, 6)));
 
     cout << "start episode" << endl;
-    cout << "deduct_score = " << deduct_score << endl;
+    cout << "deduct_score = " << ADD_score << endl;
     cout << "num_episode = " << num_episode << endl;
 
     rep2(z, num_episode)
@@ -646,11 +646,11 @@ int main()
             {
                 if (real_score > max_score)
                 {
-                    d += deduct_score;
+                    d += ADD_score;
                 }
                 else
                 {
-                    d -= deduct_score;
+                    d -= max_score - real_score;
                 }
             }
             rep2(times, 8)
