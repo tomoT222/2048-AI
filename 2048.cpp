@@ -555,7 +555,7 @@ int main()
     V.resize(n_tuple_cnt, vector<double>(pow(MAX2, 6)));
 
     cout << "start episode" << endl;
-    cout << "deduct_score = " << ADD_score << endl;
+    cout << "ADD_score = " << ADD_score << endl;
     cout << "num_episode = " << num_episode << endl;
 
     rep2(z, num_episode)
