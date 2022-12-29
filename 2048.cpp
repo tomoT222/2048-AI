@@ -543,7 +543,7 @@ int main()
 
     double ALPHA = 0.1;
     double GAMMA = 0.9;
-    int ADD_score = 1000;
+    int ADD_score = 10000;
     int num_iteration = 1000000; // Number of iterations until end of episode.
     int num_episode = 500000;    // Number of samplings.
     double ave_score = 0;
