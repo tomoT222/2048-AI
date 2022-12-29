@@ -561,7 +561,7 @@ int main()
     rep2(z, num_episode)
     {
         string mid_result;
-        ADD_score = max_score % 10;
+        ADD_score = max_score;
 
         double _eps = 0.00;
         if (z % (num_episode / 50) == 0)
