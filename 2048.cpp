@@ -653,7 +653,7 @@ int main()
                 {
                     d -= max_score - real_score;
                 }*/
-                d += real_score - (max_score * 9 / 10);
+                d += real_score - (max_score * 5 / 10);
             }
             rep2(times, 8)
             {
