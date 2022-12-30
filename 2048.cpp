@@ -555,13 +555,13 @@ int main()
     V.resize(n_tuple_cnt, vector<double>(pow(MAX2, 6)));
 
     cout << "start episode" << endl;
-    cout << "ADD_score = max_score * 5 / 10" << endl;
+    cout << "ADD_score = max_score" << endl;
     cout << "num_episode = " << num_episode << endl;
 
     rep2(z, num_episode)
     {
         string mid_result;
-        ADD_score = max_score * 5 / 10;
+        ADD_score = max_score;
 
         double _eps = 0.00;
         if (z % (num_episode / 50) == 0)
@@ -651,7 +651,7 @@ int main()
                 }
                 else
                 {
-                    d += real_score - max_score;
+                    d += real_score - max_score * 9 / 10;
                 }
             }
             rep2(times, 8)
