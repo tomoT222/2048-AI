@@ -555,13 +555,13 @@ int main()
     V.resize(n_tuple_cnt, vector<double>(pow(MAX2, 6)));
 
     cout << "start episode" << endl;
-    cout << "ADD_score = " << ADD_score << endl;
+    cout << "ADD_score = max_score * 9 / 10" << endl;
     cout << "num_episode = " << num_episode << endl;
 
     rep2(z, num_episode)
     {
         string mid_result;
-        ADD_score = max_score;
+        ADD_score = max_score * 9 / 10;
 
         double _eps = 0.00;
         if (z % (num_episode / 50) == 0)
@@ -645,15 +645,14 @@ int main()
             double d = reward + after_W - before_W;
             if (!agent.can_move_all())
             {
-                /*if (real_score > max_score)
+                if (real_score > max_score)
                 {
                     d += ADD_score;
                 }
                 else
                 {
-                    d -= max_score - real_score;
-                }*/
-                d += real_score - (max_score * 5 / 10);
+                    d += real_score - max_score;
+                }
             }
             rep2(times, 8)
             {
