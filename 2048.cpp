@@ -645,14 +645,15 @@ int main()
             double d = reward + after_W - before_W;
             if (!agent.can_move_all())
             {
-                if (real_score > max_score)
+                /*if (real_score > max_score)
                 {
                     d += ADD_score;
                 }
                 else
                 {
                     d -= max_score - real_score;
-                }
+                }*/
+                d += real_score - (max_score * 9 / 10);
             }
             rep2(times, 8)
             {
