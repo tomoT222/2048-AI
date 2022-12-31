@@ -532,7 +532,7 @@ int main()
 
     double T = clock();
 
-    // ofstream mid_results("midresults.txt");
+    ofstream mid_results("midresults.txt");
 
     make_hexadecimal();
     make_BaseTwelve();
@@ -543,25 +543,26 @@ int main()
 
     double ALPHA = 0.1;
     double GAMMA = 0.9;
-    int ADD_score = 10000;
+    int ADD_score = 100;
     int num_iteration = 1000000; // Number of iterations until end of episode.
-    int num_episode = 500000;    // Number of samplings.
+    int num_episode = 5000000;   // Number of samplings.
     double ave_score = 0;
     double before_ave = 0;
     int max_score = 0;
+    int MAX_TILE = 0;
     string max_episode;
 
     // state value function
     V.resize(n_tuple_cnt, vector<double>(pow(MAX2, 6)));
 
     cout << "start episode" << endl;
-    cout << "ADD_score = max_score" << endl;
+    cout << "MAX2 = " << MAX2 << endl;
+    cout << "ADD_score = " << ADD_score << endl;
     cout << "num_episode = " << num_episode << endl;
 
     rep2(z, num_episode)
     {
         string mid_result;
-        ADD_score = max_score;
 
         double _eps = 0.00;
         if (z % (num_episode / 50) == 0)
@@ -645,14 +646,25 @@ int main()
             double d = reward + after_W - before_W;
             if (!agent.can_move_all())
             {
-                if (real_score > max_score)
+                int max_tile = 0, sum = 0;
+                rep(A, 4)
                 {
-                    d += ADD_score;
+                    rep(B, 4)
+                    {
+                        chmax(max_tile, agent.grid[A][B]);
+                        sum += agent.grid[A][B];
+                    }
                 }
-                else
-                {
-                    d += real_score - max_score * 9 / 10;
-                }
+                d += sum - MAX_TILE;
+                chmax(MAX_TILE, max_tile);
+                // if (real_score > max_score)
+                // {
+                //     d += ADD_score;
+                // }
+                // else
+                // {
+                //     d -= max_score - real_score;
+                // }
             }
             rep2(times, 8)
             {
@@ -729,24 +741,24 @@ int main()
         }
     }
 
-    /*ofstream ofsv("2048-TD-V.txt");
-    ofsv << '{';
-    rep(i, n_tuple_cnt)
-    {
-        ofsv << '{';
-        rep(j, pow(MAX2, 6))
-        {
-            if (j != 0)
-            {
-                ofsv << ", ";
-            }
-            ofsv << V[i][j];
-        }
-        ofsv << '}' << endl;
-    }
-    ofsv << '}' << endl;*/
+    // ofstream ofsv("2048-TD-V.txt");
+    // ofsv << '{';
+    // rep(i, n_tuple_cnt)
+    // {
+    //     ofsv << '{';
+    //     rep(j, pow(MAX2, 6))
+    //     {
+    //         if (j != 0)
+    //         {
+    //             ofsv << ", ";
+    //         }
+    //         ofsv << V[i][j];
+    //     }
+    //     ofsv << '}' << endl;
+    // }
+    // ofsv << '}' << endl;
 
-    /*ofstream ofs("2048.txt");
+    ofstream ofs("2048.txt");
 
     Agent agent;
     int real_score = 0;
@@ -796,11 +808,11 @@ int main()
         }
     }
     ofs << real_score << endl;
-    ofs << last_episode << endl;*/
+    ofs << last_episode << endl;
 
-    cout << "max : " << endl;
-    cout << max_score << endl;
-    cout << max_episode << endl;
+    ofs << "max : " << endl;
+    ofs << max_score << endl;
+    ofs << max_episode << endl;
 
     printf("Execution Time: %.4lf sec\n", 1.0 * (clock() - T) / CLOCKS_PER_SEC);
     return 0;
