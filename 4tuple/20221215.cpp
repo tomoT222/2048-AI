@@ -440,8 +440,6 @@ int main()
     ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
 
-    ofstream ofs("2048.txt");
-
     double T = clock();
 
     make_hexadecimal();
@@ -459,7 +457,7 @@ int main()
     // state value function
     vector<vector<ld>> V(n_tuple_cnt, vector<ld>(MAX4));
 
-    rep(z, num_episode)
+    rep2(z, num_episode)
     {
         ld _eps = 0.0;
         if (z % (num_episode / 50) == 0)
@@ -665,7 +663,7 @@ int main()
         }
     }
 
-    ofstream ofsv("2048-TD-V.txt");
+    /*ofstream ofsv("2048-TD-V.txt");
     ofsv << '{';
     rep(i, 4)
     {
@@ -680,9 +678,9 @@ int main()
         }
         ofsv << '}' << endl;
     }
-    ofsv << '}' << endl;
+    ofsv << '}' << endl;*/
 
-    Agent agent;
+    /*Agent agent;
     rep(z, 2)
     {
         int i = xorshift64() % 4, j = xorshift64() % 4, x = xorshift64() % 2 + 1;
@@ -759,6 +757,6 @@ int main()
             }
             ofs << endl;
         }
-    }
+    }*/
     return 0;
 }
