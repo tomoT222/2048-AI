@@ -12,6 +12,6 @@ jobs:
           version: latest
           platform: x64
       - name: compile
-        run: g++ -O3 2048.cpp
+        run: g++ -O3 4tuple/20221215.cpp
       - name: run
         run: ./a.out
