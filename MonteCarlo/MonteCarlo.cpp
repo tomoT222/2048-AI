@@ -201,7 +201,7 @@ public:
 	vector<vector<int>> grid;
 	int score;
 
-	Class2048(int _seed, vector<vector<int>> _grid = zeros)
+	Class2048(int _seed = 0, vector<vector<int>> _grid = zeros)
 	{
 		seed = _seed;
 		grid = _grid;
@@ -348,23 +348,23 @@ public:
 				}
 			}
 		}
-		
-        vector<int> freeCells;
-        for (int j = 0; j < 4; j++)
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                if (grid[i][j] == 0)
-                {
-                    freeCells.push_back(i + j * 4);
-                }
-            }
-        }
-        int spawnIndex = freeCells[(int)seed % freeCells.size()];
-        int value = ((seed & 0x10) == 0 ? 2 : 4);
-        grid[spawnIndex % 4][spawnIndex / 4] = Log2[value];
 
-        seed = seed * seed % 50515093L;
+		vector<int> freeCells;
+		for (int j = 0; j < 4; j++)
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				if (grid[i][j] == 0)
+				{
+					freeCells.push_back(i + j * 4);
+				}
+			}
+		}
+		int spawnIndex = freeCells[(int)seed % freeCells.size()];
+		int value = ((seed & 0x10) == 0 ? 2 : 4);
+		grid[spawnIndex % 4][spawnIndex / 4] = Log2[value];
+
+		seed = seed * seed % 50515093L;
 	}
 };
 
@@ -376,6 +376,8 @@ Action randomAction(const State &state)
 	auto legal_actions = state.legalActions();
 	return legal_actions[xorshift64() % (legal_actions.size())];
 }
+
+int MOVE_CNT;
 
 namespace montecarlo
 {
@@ -398,17 +400,17 @@ namespace montecarlo
 	}
 
 	constexpr const double C = 1.;			   // UCB1の計算に使う定数
-	constexpr const int EXPAND_THRESHOLD = 10; // ノードを展開する閾値
+	constexpr const int EXPAND_THRESHOLD = 3; // ノードを展開する閾値
 
 	// MCTSの計算に使うノード
 	class Node
 	{
 	private:
 		State state_;
-		double w_;
 
 	public:
 		vector<Node> child_nodes;
+		double w_;
 		double n_;
 
 		// ノードの評価を行う
@@ -505,23 +507,23 @@ namespace montecarlo
 		}
 		auto legal_actions = state.legalActions();
 
-		int best_n = -1;
+		double best_w = -1;
 		int best_i = -1;
 		assert(legal_actions.size() == root_node.child_nodes.size());
 		for (int i = 0; i < legal_actions.size(); i++)
 		{
-			int n = root_node.child_nodes[i].n_;
-			if (n > best_n)
+			int w = root_node.child_nodes[i].w_;
+			if (w > best_w)
 			{
 				best_i = i;
-				best_n = n;
+				best_w = w;
 			}
 		}
 		return legal_actions[best_i];
 	}
 
 	// 制限時間(ms)を指定してMCTSで行動を決定する
-	Action mctsActionWithTimeThreshold(const State &state, const int64_t time_threshold)
+	Actions mctsActionWithTimeThreshold(State &state, const int64_t time_threshold)
 	{
 		Node root_node = Node(state);
 		root_node.expand();
@@ -539,22 +541,35 @@ namespace montecarlo
 		}
 		cerr << "play out cnt " << cnt << endl;
 
-		auto legal_actions = state.legalActions();
-
-		int best_n = -1;
-		int best_i = -1;
-		assert(legal_actions.size() == root_node.child_nodes.size());
-		for (int i = 0; i < legal_actions.size(); i++)
+		Actions ret;
+		rep(i, MOVE_CNT)
 		{
-			int n = root_node.child_nodes[i].n_;
-			cerr << "legal " << legal_actions[i] << ' ' << n << endl;
-			if (n > best_n)
+			auto legal_actions = state.legalActions();
+
+			double best_w = -1;
+			int best_i = -1;
+			if (root_node.child_nodes.size() == 0)
 			{
-				best_i = i;
-				best_n = n;
+				break;
 			}
+			assert(legal_actions.size() == root_node.child_nodes.size());
+			for (int i = 0; i < legal_actions.size(); i++)
+			{
+				int n = root_node.child_nodes[i].n_;
+				int w = root_node.child_nodes[i].w_;
+				// cerr << "legal " << legal_actions[i] << ' ' << w << ' ' << n << endl;
+				if (w > best_w)
+				{
+					best_i = i;
+					best_w = w;
+				}
+			}
+            Node _node = root_node.child_nodes[best_i];
+			root_node = _node;
+			state.advance(legal_actions[best_i]);
+			ret.push_back(legal_actions[best_i]);
 		}
-		return legal_actions[best_i];
+		return ret;
 	}
 }
 using montecarlo::mctsAction;
@@ -573,19 +588,25 @@ int main()
 	make_Log2();
 	make_new_line();
 
+	State state;
+    bool first = true;
+    int TL = 950;
+    MOVE_CNT = 100;
+
 	// game loop
 	while (1)
 	{
+        double T = clock();
+
 		int seed;
 		cin >> seed;
-		// cerr << seed << endl;
 
 		int Score;
 		cin >> Score;
 		// cerr << Score << endl;
 
-		State state(seed);
-        state.score = Score;
+		state.seed = seed;
+		state.score = Score;
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -597,9 +618,21 @@ int main()
 			}
 		}
 
-		Action action = mctsActionWithTimeThreshold(state, 45);
-		state.advance(action);
+		Actions action = mctsActionWithTimeThreshold(state, TL);
+		rep(i, action.size())
+		{
+			cout << Answer[action[i]];
+		}
+        cerr << (clock() - T) / CLOCKS_PER_SEC << endl;
 
-		cout << Answer[action] << endl;
+		cout << endl;
+        first = false;
+        TL = 45;
+        MOVE_CNT = 4;
 	}
 }
+/*
+score
+Class2048 - Done()
+montecarlo - evaluate
+*/
