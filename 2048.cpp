@@ -461,11 +461,11 @@ int select_action(vector<double> Q, double eps)
 ////
 ////      list of n-tuple
 ////
-constexpr int n_tuple_cnt = 4;
-// vector<vector<int>> x = {{0, 0, 0, 0, 1, 1}, {0, 1, 1, 1, 2, 2}, {1, 1, 2, 3, 3, 3}, {1, 2, 3, 3, 3, 3}, {0, 0, 0, 1, 1, 1}, {0, 1, 1, 1, 2, 2}, {1, 2, 2, 2, 3, 3}, {0, 1, 1, 1, 1, 2}, {1, 2, 2, 2, 3, 3}, {1, 1, 2, 2, 3, 3}};
-// vector<vector<int>> y = {{0, 1, 2, 3, 0, 1}, {3, 1, 2, 3, 1, 2}, {0, 1, 0, 0, 1, 2}, {3, 3, 0, 1, 2, 3}, {0, 1, 3, 1, 2, 3}, {1, 0, 1, 2, 1, 2}, {2, 1, 2, 3, 1, 2}, {0, 0, 1, 2, 3, 1}, {1, 0, 1, 2, 0, 1}, {2, 3, 2, 3, 2, 3}};
-vector<vector<int>> x = {{0, 0, 0, 0, 1, 1}, {1, 1, 1, 1, 2, 2}, {1, 1, 1, 2, 2, 2}, {2, 2, 2, 3, 3, 3}};
-vector<vector<int>> y = {{0, 1, 2, 3, 0, 1}, {0, 1, 2, 3, 0, 1}, {1, 2, 3, 1, 2, 3}, {1, 2, 3, 1, 2, 3}};
+constexpr int n_tuple_cnt = 10;
+vector<vector<int>> x = {{0, 0, 0, 0, 1, 1}, {0, 1, 1, 1, 2, 2}, {1, 1, 2, 3, 3, 3}, {1, 2, 3, 3, 3, 3}, {0, 0, 0, 1, 1, 1}, {0, 1, 1, 1, 2, 2}, {1, 2, 2, 2, 3, 3}, {0, 1, 1, 1, 1, 2}, {1, 2, 2, 2, 3, 3}, {1, 1, 2, 2, 3, 3}};
+vector<vector<int>> y = {{0, 1, 2, 3, 0, 1}, {3, 1, 2, 3, 1, 2}, {0, 1, 0, 0, 1, 2}, {3, 3, 0, 1, 2, 3}, {0, 1, 3, 1, 2, 3}, {1, 0, 1, 2, 1, 2}, {2, 1, 2, 3, 1, 2}, {0, 0, 1, 2, 3, 1}, {1, 0, 1, 2, 0, 1}, {2, 3, 2, 3, 2, 3}};
+// vector<vector<int>> x = {{0, 0, 0, 0, 1, 1}, {1, 1, 1, 1, 2, 2}, {1, 1, 1, 2, 2, 2}, {2, 2, 2, 3, 3, 3}};
+// vector<vector<int>> y = {{0, 1, 2, 3, 0, 1}, {0, 1, 2, 3, 0, 1}, {1, 2, 3, 1, 2, 3}, {1, 2, 3, 1, 2, 3}};
 // vector<vector<int>> x = {{0, 0, 0, 0, 1, 1}, {0, 0, 0, 0, 1, 2}, {0, 0, 0, 1, 1, 1}, {0, 0, 1, 1, 1, 2}};
 // vector<vector<int>> y = {{0, 1, 2, 3, 0, 1}, {0, 1, 2, 3, 0, 0}, {0, 1, 2, 0, 1, 2}, {0, 1, 0, 1, 2, 1}};
 vector<vector<int>> Rotate = {{12, 8, 4, 0}, {13, 9, 5, 1}, {14, 10, 6, 2}, {15, 11, 7, 3}};
@@ -532,7 +532,7 @@ int main()
 
     double T = clock();
 
-    ofstream mid_results("midresults.txt");
+    // ofstream mid_results("midresults.txt");
 
     make_hexadecimal();
     make_BaseTwelve();
@@ -543,20 +543,18 @@ int main()
 
     double ALPHA = 0.1;
     double GAMMA = 0.9;
-    int ADD_score = 100;
+    int ADD_score = 10000;
     int num_iteration = 1000000; // Number of iterations until end of episode.
-    int num_episode = 5000000;   // Number of samplings.
+    int num_episode = 500000;    // Number of samplings.
     double ave_score = 0;
     double before_ave = 0;
     int max_score = 0;
-    int MAX_TILE = 0;
     string max_episode;
 
     // state value function
     V.resize(n_tuple_cnt, vector<double>(pow(MAX2, 6)));
 
     cout << "start episode" << endl;
-    cout << "MAX2 = " << MAX2 << endl;
     cout << "ADD_score = " << ADD_score << endl;
     cout << "num_episode = " << num_episode << endl;
 
@@ -646,25 +644,14 @@ int main()
             double d = reward + after_W - before_W;
             if (!agent.can_move_all())
             {
-                int max_tile = 0, sum = 0;
-                rep(A, 4)
+                if (real_score > max_score)
                 {
-                    rep(B, 4)
-                    {
-                        chmax(max_tile, agent.grid[A][B]);
-                        sum += agent.grid[A][B];
-                    }
+                    d += ADD_score;
                 }
-                d += sum - MAX_TILE;
-                chmax(MAX_TILE, max_tile);
-                // if (real_score > max_score)
-                // {
-                //     d += ADD_score;
-                // }
-                // else
-                // {
-                //     d -= max_score - real_score;
-                // }
+                else
+                {
+                    d -= max_score - real_score;
+                }
             }
             rep2(times, 8)
             {
@@ -741,24 +728,24 @@ int main()
         }
     }
 
-    // ofstream ofsv("2048-TD-V.txt");
-    // ofsv << '{';
-    // rep(i, n_tuple_cnt)
-    // {
-    //     ofsv << '{';
-    //     rep(j, pow(MAX2, 6))
-    //     {
-    //         if (j != 0)
-    //         {
-    //             ofsv << ", ";
-    //         }
-    //         ofsv << V[i][j];
-    //     }
-    //     ofsv << '}' << endl;
-    // }
-    // ofsv << '}' << endl;
+    /*ofstream ofsv("2048-TD-V.txt");
+    ofsv << '{';
+    rep(i, n_tuple_cnt)
+    {
+        ofsv << '{';
+        rep(j, pow(MAX2, 6))
+        {
+            if (j != 0)
+            {
+                ofsv << ", ";
+            }
+            ofsv << V[i][j];
+        }
+        ofsv << '}' << endl;
+    }
+    ofsv << '}' << endl;*/
 
-    ofstream ofs("2048.txt");
+    /*ofstream ofs("2048.txt");
 
     Agent agent;
     int real_score = 0;
@@ -808,11 +795,11 @@ int main()
         }
     }
     ofs << real_score << endl;
-    ofs << last_episode << endl;
+    ofs << last_episode << endl;*/
 
-    ofs << "max : " << endl;
-    ofs << max_score << endl;
-    ofs << max_episode << endl;
+    cout << "max : " << endl;
+    cout << max_score << endl;
+    cout << max_episode << endl;
 
     printf("Execution Time: %.4lf sec\n", 1.0 * (clock() - T) / CLOCKS_PER_SEC);
     return 0;
