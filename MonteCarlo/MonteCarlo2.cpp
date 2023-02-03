@@ -670,7 +670,7 @@ int main()
 
         // cout << endl;
         first = false;
-        TL = 100;
+        TL = 1000;
         MOVE_CNT = 4;
         cnt++;
         // state.Out();
