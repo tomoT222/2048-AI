@@ -418,7 +418,7 @@ namespace montecarlo
     }
 
     constexpr const double C = 1.;            // UCB1の計算に使う定数
-    constexpr const int EXPAND_THRESHOLD = 10; // ノードを展開する閾値
+    constexpr const int EXPAND_THRESHOLD = 5; // ノードを展開する閾値
 
     // MCTSの計算に使うノード
     class Node
