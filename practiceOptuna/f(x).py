@@ -9,3 +9,5 @@ def objective(trial):
 
 study = optuna.create_study()
 study.optimize(objective, n_trials=10)
+
+print(study.best_params)
