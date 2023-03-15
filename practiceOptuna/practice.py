@@ -12,9 +12,11 @@ study.optimize(objective, n_trials=10)
 
 print(study.best_params)
 
-f = open('practiceOptuna/input.txt', 'r')
+f1 = open('practiceOptuna/input.txt', 'r')
+data = f1.read()
 
-data = f.read()
-print(data)
+f2 = open('practiceOptuna/output.txt', 'w')
+f2.write(data)
 
-f.close()
+f1.close()
+f2.close()
