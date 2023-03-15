@@ -14,4 +14,10 @@ jobs:
       - name: Setup | Optuna
         run: python -m pip install optuna
       - name: run
-        run: python practiceOptuna/practice.py
+        run: |
+          python practiceOptuna/practice.py
+          git config user.name  "tomoT222"
+          git config user.email "tomo222.penken@gmail.com"
+          git add .
+          git commit -m "opt from github actions"
+          git push
