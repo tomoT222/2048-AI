@@ -11,3 +11,10 @@ study = optuna.create_study()
 study.optimize(objective, n_trials=10)
 
 print(study.best_params)
+
+f = open('input.txt', 'r')
+
+data = f.read()
+print(data)
+
+f.close()
