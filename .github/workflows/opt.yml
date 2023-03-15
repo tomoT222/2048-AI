@@ -1,0 +1,17 @@
+name: opt-parameter
+on:
+  workflow_dispatch:
+jobs:
+  opt-params:
+    runs-on: windows-2019
+    steps:
+      - name: Setup | Checkout
+        uses: actions/checkout@v3
+      - name: Setup | Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+      - name: Setup | Optuna
+        run: python -m pip install optuna
+      - name: run
+        run: practiceOptuna/f(x).py
