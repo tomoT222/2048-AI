@@ -14,9 +14,10 @@ print(study.best_params)
 
 f1 = open('practiceOptuna/input.txt', 'r')
 data = f1.read()
+f1.close()
+
+print(data)
 
 f2 = open('practiceOptuna/output.txt', 'w')
 f2.write(data)
-
-f1.close()
 f2.close()
