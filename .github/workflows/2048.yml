@@ -1,5 +1,7 @@
 name: run-code
-on: [push]
+# on: [push]
+on:
+  workflow_dispatch:
 jobs:
   compile-run:
     runs-on: ubuntu-latest
