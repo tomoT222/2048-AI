@@ -12,7 +12,7 @@ study.optimize(objective, n_trials=10)
 
 print(study.best_params)
 
-f = open('input.txt', 'r')
+f = open('practiceOptuna/input.txt', 'r')
 
 data = f.read()
 print(data)
