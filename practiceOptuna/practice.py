@@ -21,3 +21,7 @@ print(data)
 f2 = open('practiceOptuna/output.txt', 'w')
 f2.write(data)
 f2.close()
+
+f3 = open('practiceOptuna/output2.txt', 'w')
+f3.write("practicepracticepractice")
+f3.close()
